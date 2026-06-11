@@ -1,0 +1,10 @@
+{
+  "name": "tomato-focus-clock",
+  "version": "1.0.0",
+  "private": true,
+  "description": "一款简洁、可自定义的网页版番茄钟",
+  "scripts": {
+    "start": "node scripts/serve.mjs",
+    "check": "node --check app.js && node scripts/check.mjs"
+  }
+}

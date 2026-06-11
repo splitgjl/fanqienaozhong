@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="一款简洁、专注、可自定义的网页版番茄钟。"
+    />
+    <meta name="theme-color" content="#f45b45" />
+    <title>番茄专注钟</title>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="ambient ambient-one"></div>
+    <div class="ambient ambient-two"></div>
+
+    <main class="app-shell">
+      <header class="topbar">
+        <a class="brand" href="#" aria-label="番茄专注钟首页">
+          <span class="brand-mark" aria-hidden="true">
+            <span class="leaf leaf-left"></span>
+            <span class="leaf leaf-right"></span>
+          </span>
+          <span>番茄专注钟</span>
+        </a>
+        <div class="header-actions">
+          <button class="icon-button" id="soundToggle" type="button" aria-label="关闭声音">
+            <svg class="sound-on" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M11 5 6 9H3v6h3l5 4V5Zm4.5 4a4 4 0 0 1 0 6M18 6a8 8 0 0 1 0 12" />
+            </svg>
+            <svg class="sound-off" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M11 5 6 9H3v6h3l5 4V5Zm5 5 5 5m0-5-5 5" />
+            </svg>
+          </button>
+          <button class="icon-button" id="settingsOpen" type="button" aria-label="打开设置">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z" />
+              <path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-2.83 2.83-.06-.06a1.7 1.7 0 0 0-1.88-.34 1.7 1.7 0 0 0-1.03 1.56V21h-4v-.08A1.7 1.7 0 0 0 8.96 19.4a1.7 1.7 0 0 0-1.88.34l-.06.06-2.83-2.83.06-.06A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-1.56-1.03H3v-4h.08A1.7 1.7 0 0 0 4.6 8.94a1.7 1.7 0 0 0-.34-1.88L4.2 7l2.83-2.83.06.06a1.7 1.7 0 0 0 1.88.34A1.7 1.7 0 0 0 10 3.02V3h4v.08a1.7 1.7 0 0 0 1.03 1.56 1.7 1.7 0 0 0 1.88-.34l.06-.06 2.83 2.83-.06.06a1.7 1.7 0 0 0-.34 1.88A1.7 1.7 0 0 0 20.96 10H21v4h-.08A1.7 1.7 0 0 0 19.4 15Z" />
+            </svg>
+          </button>
+        </div>
+      </header>
+
+      <section class="hero" aria-labelledby="pageTitle">
+        <p class="eyebrow">把注意力留给重要的事</p>
+        <h1 id="pageTitle">专注当下，轻松前进</h1>
+        <p class="hero-copy">一次只做一件事。让每个番茄钟，都成为你认真生活的证据。</p>
+      </section>
+
+      <section class="workspace">
+        <article class="timer-card">
+          <div class="mode-tabs" role="tablist" aria-label="计时模式">
+            <button class="mode-tab active" type="button" data-mode="focus" role="tab" aria-selected="true">
+              专注
+            </button>
+            <button class="mode-tab" type="button" data-mode="short" role="tab" aria-selected="false">
+              短休息
+            </button>
+            <button class="mode-tab" type="button" data-mode="long" role="tab" aria-selected="false">
+              长休息
+            </button>
+          </div>
+
+          <div class="timer-wrap">
+            <svg class="progress-ring" viewBox="0 0 280 280" aria-hidden="true">
+              <circle class="progress-track" cx="140" cy="140" r="126"></circle>
+              <circle class="progress-value" id="progressRing" cx="140" cy="140" r="126"></circle>
+            </svg>
+            <div class="timer-content">
+              <p id="timerLabel">专注时间</p>
+              <time id="timerDisplay" datetime="PT25M">25:00</time>
+              <span id="sessionCounter">第 1 个番茄</span>
+            </div>
+          </div>
+
+          <div class="timer-actions">
+            <button class="secondary-button" id="resetButton" type="button">重置</button>
+            <button class="primary-button" id="startButton" type="button">
+              <svg class="play-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="m9 7 8 5-8 5V7Z" />
+              </svg>
+              <svg class="pause-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M8 7h3v10H8V7Zm5 0h3v10h-3V7Z" />
+              </svg>
+              <span>开始专注</span>
+            </button>
+            <button class="secondary-button" id="skipButton" type="button">跳过</button>
+          </div>
+        </article>
+
+        <aside class="side-panel">
+          <section class="panel-card task-card">
+            <div class="panel-heading">
+              <div>
+                <p class="panel-kicker">当前任务</p>
+                <h2>这次要完成什么？</h2>
+              </div>
+              <span class="task-status" id="taskStatus">待开始</span>
+            </div>
+            <label class="sr-only" for="taskInput">当前任务</label>
+            <textarea
+              id="taskInput"
+              rows="3"
+              maxlength="120"
+              placeholder="例如：完成产品首页设计"
+            ></textarea>
+            <div class="task-meta">
+              <span><strong id="taskCount">0</strong>/120</span>
+              <button class="text-button" id="clearTask" type="button">清空任务</button>
+            </div>
+          </section>
+
+          <section class="panel-card stats-card">
+            <div class="panel-heading">
+              <div>
+                <p class="panel-kicker">今日进度</p>
+                <h2 id="todayDate">今天</h2>
+              </div>
+              <div class="streak-badge" title="连续专注天数">
+                <span aria-hidden="true">◆</span>
+                <strong id="streakCount">0</strong> 天
+              </div>
+            </div>
+            <div class="stats-grid">
+              <div class="stat-item">
+                <strong id="completedCount">0</strong>
+                <span>完成番茄</span>
+              </div>
+              <div class="stat-item">
+                <strong id="focusMinutes">0</strong>
+                <span>专注分钟</span>
+              </div>
+            </div>
+            <div class="daily-goal">
+              <div class="goal-copy">
+                <span>每日目标</span>
+                <strong><span id="goalProgress">0</span> / <span id="goalTotal">8</span></strong>
+              </div>
+              <div class="goal-track" role="progressbar" aria-label="每日番茄目标" aria-valuemin="0" aria-valuemax="8" aria-valuenow="0">
+                <span id="goalBar"></span>
+              </div>
+            </div>
+          </section>
+
+          <blockquote>
+            “慢慢来，比较快。”
+            <cite>给认真生活的你</cite>
+          </blockquote>
+        </aside>
+      </section>
+
+      <footer>
+        <span>番茄专注钟</span>
+        <span>保持专注，也别忘了休息。</span>
+      </footer>
+    </main>
+
+    <div class="modal-backdrop" id="settingsModal" hidden>
+      <section class="settings-modal" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+        <div class="modal-heading">
+          <div>
+            <p class="panel-kicker">偏好设置</p>
+            <h2 id="settingsTitle">定制你的节奏</h2>
+          </div>
+          <button class="icon-button" id="settingsClose" type="button" aria-label="关闭设置">×</button>
+        </div>
+        <form id="settingsForm">
+          <div class="settings-grid">
+            <label>
+              专注时长（分钟）
+              <input id="focusDuration" type="number" min="1" max="120" required />
+            </label>
+            <label>
+              短休息（分钟）
+              <input id="shortDuration" type="number" min="1" max="60" required />
+            </label>
+            <label>
+              长休息（分钟）
+              <input id="longDuration" type="number" min="1" max="90" required />
+            </label>
+            <label>
+              每日目标（个）
+              <input id="dailyGoal" type="number" min="1" max="24" required />
+            </label>
+          </div>
+          <label class="check-row">
+            <input id="autoStartBreaks" type="checkbox" />
+            <span>专注结束后自动开始休息</span>
+          </label>
+          <label class="check-row">
+            <input id="autoStartFocus" type="checkbox" />
+            <span>休息结束后自动开始专注</span>
+          </label>
+          <div class="modal-actions">
+            <button class="secondary-button" id="restoreDefaults" type="button">恢复默认</button>
+            <button class="primary-button" type="submit">保存设置</button>
+          </div>
+        </form>
+      </section>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,4 @@
+.tools/
+gh-cli.zip
+.gh-device-auth.json
+gh-auth-*.txt
