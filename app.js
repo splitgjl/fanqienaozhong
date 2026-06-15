@@ -38,6 +38,9 @@ const elements = {
   goalTotal: document.querySelector("#goalTotal"),
   goalBar: document.querySelector("#goalBar"),
   goalTrack: document.querySelector(".goal-track"),
+  historyCount: document.querySelector("#historyCount"),
+  historyEmpty: document.querySelector("#historyEmpty"),
+  historyList: document.querySelector("#historyList"),
   settingsModal: document.querySelector("#settingsModal"),
   settingsOpen: document.querySelector("#settingsOpen"),
   settingsClose: document.querySelector("#settingsClose"),
@@ -79,6 +82,7 @@ function loadData() {
     settings: { ...DEFAULT_SETTINGS },
     task: "",
     stats: {},
+    history: {},
   };
 
   try {
@@ -87,6 +91,7 @@ function loadData() {
       settings: { ...DEFAULT_SETTINGS, ...(stored?.settings || {}) },
       task: stored?.task || "",
       stats: stored?.stats || {},
+      history: stored?.history || {},
     };
   } catch {
     return fallback;
@@ -103,6 +108,10 @@ function getTodayStats() {
     appData.stats[key] = { completed: 0, minutes: 0 };
   }
   return appData.stats[key];
+}
+
+function getTodayHistory() {
+  return appData.history[getDateKey()] || [];
 }
 
 function formatTime(seconds) {
@@ -148,6 +157,38 @@ function updateStatsUI() {
   elements.goalTrack.setAttribute("aria-valuenow", today.completed);
   elements.streakCount.textContent = calculateStreak();
   elements.sessionCounter.textContent = `第 ${today.completed + 1} 个番茄`;
+}
+
+function updateHistoryUI() {
+  const history = getTodayHistory();
+  const recentHistory = history.slice(-5).reverse();
+
+  elements.historyCount.textContent = history.length;
+  elements.historyEmpty.hidden = history.length > 0;
+  elements.historyList.replaceChildren(
+    ...recentHistory.map((entry) => {
+      const item = document.createElement("li");
+      const content = document.createElement("div");
+      const task = document.createElement("strong");
+      const meta = document.createElement("span");
+      const minutes = document.createElement("span");
+
+      item.className = "history-item";
+      content.className = "history-content";
+      task.textContent = entry.task || "未命名专注";
+      meta.textContent = new Intl.DateTimeFormat("zh-CN", {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
+      }).format(new Date(entry.completedAt));
+      minutes.className = "history-minutes";
+      minutes.textContent = `${entry.minutes} 分钟`;
+
+      content.append(task, meta);
+      item.append(content, minutes);
+      return item;
+    }),
+  );
 }
 
 function calculateStreak() {
@@ -217,10 +258,19 @@ function completeSession() {
 
   if (completedMode === "focus") {
     const today = getTodayStats();
+    const dateKey = getDateKey();
     today.completed += 1;
     today.minutes += appData.settings.focus;
+    appData.history[dateKey] ||= [];
+    appData.history[dateKey].push({
+      id: `${Date.now()}-${today.completed}`,
+      task: appData.task.trim(),
+      minutes: appData.settings.focus,
+      completedAt: new Date().toISOString(),
+    });
     saveData();
     updateStatsUI();
+    updateHistoryUI();
     showToast("完成一个番茄，做得很好。现在休息一下吧。");
     notify("专注完成", "做得很好，现在休息一下吧。");
     const nextMode = today.completed % 4 === 0 ? "long" : "short";
@@ -354,6 +404,7 @@ function initialize() {
   );
   updateTimerUI();
   updateStatsUI();
+  updateHistoryUI();
 }
 
 elements.startButton.addEventListener("click", () => {
